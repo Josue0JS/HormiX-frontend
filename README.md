@@ -63,6 +63,12 @@ npm run dev
 
 El servidor estará disponible en `http://localhost:5173`
 
+# Autores
+
+* Victor betancur
+* Josue lorenzo
+* Andres ruiz
+
 ## Licencia
 
 Publico 
