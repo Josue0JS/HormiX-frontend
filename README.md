@@ -1,16 +1,68 @@
-# React + Vite
+# Hormix
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+HormiX es una aplicación web enfocada en el control de gastos hormiga, permitiendo a los usuarios registrar, visualizar y analizar pequeños gastos diarios que afectan sus finanzas sin que lo noten.
 
-Currently, two official plugins are available:
+## Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Los gastos hormiga son pequeños consumos diarios (cafés, snacks, transporte, suscripciones, etc.) que parecen insignificantes pero, acumulados, impactan significativamente el presupuesto mensual.
 
-## React Compiler
+HormiX permite:
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+Registrar gastos diarios
 
-## Expanding the ESLint configuration
+Categorizar gastos
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Visualizar el total acumulado
+
+Analizar el impacto mensual
+
+Gestionar categorías personalizadas
+
+## Tecnologías
+
+- **React** 19.2.0
+- **Vite** 7.3.1
+- **JavaScript/JSX**
+- **ESLint** para análisis de código
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Disponible Scripts
+
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Construye la aplicación para producción
+- `npm run preview` - Visualiza la construcción de producción localmente
+- `npm run lint` - Ejecuta ESLint para verificar la calidad del código
+
+## Estructura del Proyecto
+
+```
+src/
+├── components/      # Componentes reutilizables
+├── pages/          # Páginas principales
+├── router/         # Configuración de rutas
+├── services/       # Servicios y utilidades
+├── helpers/        # Funciones auxiliares
+├── assets/         # Recursos estáticos
+├── App.jsx         # Componente principal
+├── main.jsx        # Punto de entrada
+└── index.css       # Estilos globales
+```
+
+## Desarrollo
+
+Para comenzar el desarrollo:
+
+```bash
+npm run dev
+```
+
+El servidor estará disponible en `http://localhost:5173`
+
+## Licencia
+
+Publico 
