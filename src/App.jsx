@@ -1,13 +1,11 @@
-import './App.css'
-import Layout from './components/Layout'
+import { RouterProvider } from 'react-router-dom';
+import { routerApp } from './router/appRouter';
+import './App.css';
 
 function App() {
-
   return (
-    <Layout>
-      <h2>Bienvenidos a HormiX</h2>
-    </Layout>
-  )
+    <RouterProvider router={routerApp} /> 
+  );
 }
 
-export default App
+export default App;
