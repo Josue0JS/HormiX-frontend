@@ -63,6 +63,10 @@ npm run dev
 
 El servidor estará disponible en `http://localhost:5173`
 
+# Encendido del backend con JSON-Server
+
+* json-server --watch db.json --port 8080 (instalar json-server)
+
 # Autores
 
 * Victor betancur

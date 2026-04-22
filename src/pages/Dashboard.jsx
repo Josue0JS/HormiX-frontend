@@ -65,7 +65,7 @@ const Dashboard = () => {
     });
     getExpenses();
   };
-
+  
   return (
     <div className="dashboard-wrapper">
 
