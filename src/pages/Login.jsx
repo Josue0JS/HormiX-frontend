@@ -9,21 +9,21 @@ import { redirectAlert } from '../helpers/alert';
 const Login = () => {
   const [getEmail, setEmail]  = useState('');
   const [getPassword, setPassword] = useState('');
-  // const [users, setUsers] = useState([]); NO USAR HASTA TENER EL BACKEND FUNCIONAL
+  // const [users, setUsers] = useState([]); NO USAR HASTA TENER EL BACKEND FUNCIONAL, MIENTRAS USO localStorage
 
   //funciones
   //   function getUser(){
   //     fetch(end_points.users)
-  //     .then((response) => response.json()) NO USAR HASTA TENER EL BACKEND FUNCIONAL
+  //     .then((response) => response.json()) NO USAR HASTA TENER EL BACKEND FUNCIONAL, MIENTRAS USO localStorage
   //     .then((data) => setUsers(data))
   //   }
 
   // useEffect(() => {
-  //   getUser();    NO USAR HASTA TENER EL BACKEND FUNCIONAL
+  //   getUser();    NO USAR HASTA TENER EL BACKEND FUNCIONAL, MIENTRAS USO localStorage
   // }, []);
 
   // function findUser(){
-  //   let auth = users.find((item) => getEmail == item.Email && getPassword == item.password); (NO USAR HASTA TENER EL BACKEND FUNCIONAL
+  //   let auth = users.find((item) => getEmail == item.Email && getPassword == item.password); NO USAR HASTA TENER EL BACKEND FUNCIONAL, MIENTRAS USO localStorage
   //   return auth 
   // }
 
@@ -73,7 +73,6 @@ const Login = () => {
         <img src={logo} alt="Logo Hormix" />
       </div>
 
-      {/* FORM */}
       <form onSubmit={handleSubmit}>
         <h1>Inicia Sesión</h1>
 

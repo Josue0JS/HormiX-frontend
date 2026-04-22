@@ -4,6 +4,7 @@ import logo from "../assets/logo.png";
 import { saveLocalStorage } from "../helpers/local-storage";
 import { redirectAlert } from "../helpers/alert";
 
+
 const Register = () => {
 
   const [form, setForm] = useState({
@@ -125,7 +126,7 @@ const Register = () => {
               <input
                 type="password"
                 name="confirmPassword"
-                value={form.confirmPassword}
+                value={form.confirmPassword} 
                 onChange={handleChange}
                 placeholder="********"
                 required
