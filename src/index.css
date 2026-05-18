@@ -153,7 +153,8 @@ body{
 
 .register-card{
   display: flex;
-  width: 700px;
+  width: 800px;
+  height: 700px;
   background: white;
   border-radius: 20px;
   box-shadow: 0px 15px 40px rgba(0,0,0,0.1);
@@ -175,7 +176,7 @@ body{
 
 .register-right{
   width: 50%;
-  padding: 30px;
+  padding: 40px;
 }
 
 .register-right form{
@@ -190,7 +191,7 @@ body{
 
 
 .register-group{
-  margin-bottom: 18px;
+  margin-bottom: 10px;
 }
 
 .register-group label{
@@ -200,7 +201,7 @@ body{
 }
 
 .register-group input{
-  width: 100%;
+  width: 90%;
   padding: 10px;
   border: 1px solid #ff7b00;
   border-radius: 10px;
@@ -209,7 +210,7 @@ body{
 
 
 .register-btn{
-  width: 100%;
+  width: 90%;
   padding: 10px;
   background: #ff7b00;
   color: white;
@@ -233,6 +234,14 @@ body{
   color: #ff7b00;
   text-decoration: none;
   font-weight: 600;
+}
+
+.register-group select{
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ff7b00;
+  border-radius: 10px;
+  font-size: 13px;
 }
 
 /* dashboard */

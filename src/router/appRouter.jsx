@@ -16,6 +16,18 @@ export const routerApp = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard />,
   },
+  {
+    path: "/expenses",
+    element: <Expenses />,
+  },
+  {
+    path: "/edit-expense/:id",
+    element: <EditExpense />,
+  },
+  {
+    path: "/create-expense",
+    element: <CreateExpense />,
+  }
 ]);
 
 
