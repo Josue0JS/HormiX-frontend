@@ -5,10 +5,15 @@ import Register from '../pages/Register';
 import Expenses from '../pages/Expenses';
 import CreateExpense from '../pages/CreateExpense';
 import EditExpense from '../pages/EditExpense';
+import LandingPage from '../pages/LandingPage';
 
 export const routerApp = createBrowserRouter([
   {
     path: "/",
+    element: <LandingPage/>
+  },
+  {
+    path: "/login",
     element: <Login />,
   },
   {
