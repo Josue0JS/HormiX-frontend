@@ -11,7 +11,7 @@ const Dashboard = () => {
       "Sesión cerrada",
       "Has cerrado la sesión correctamente",
       "success",
-      "/"
+      "/login"
     );
   }
 
@@ -22,13 +22,13 @@ const Dashboard = () => {
           <div className="dashboard-user">
             <div className="dashboard-user-logo">
               <span>
-                <i class="fi fi-rr-user"></i>
+                <i className="fi fi-rr-user"></i>
               </span>
             </div>
 
             <div className="dashboard-user-info">
-              {/* <span>{user.nombre || "Usuario"}</span>
-              <span>{user.documento || "Documento"}</span> */}
+               <span>{user.nombre || "Usuario"}</span>
+              <span>{user.documento || "Documento"}</span> 
             </div>
           </div>
 
@@ -39,7 +39,7 @@ const Dashboard = () => {
 
             <button type="button" className="dashboard-secondary-btn" onClick={logout}>
               cerrar sesión
-              <i class="fi fi-rr-logout"></i>
+              <i className="fi fi-rr-logout"></i>
             </button>
           </div>
         </div>

@@ -18,7 +18,15 @@ const Expenses = () => {
   function fetchExpenses() {
     fetch(end_points.expenses)
       .then((response) => response.json())
-      .then((data) => setExpenses(data));
+      .then((data) => {
+        
+        const expensesArray = Array.isArray(data) ? data : [];
+        setExpenses(expensesArray);
+      })
+      .catch((error) => {
+        console.error("Error al obtener gastos:", error);
+        setExpenses([]);
+      });
   }
 
   useEffect(() => {
@@ -36,7 +44,7 @@ const Expenses = () => {
       confirmButtonText: "Sí, eliminar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(end_points.expenses + id, {
+        fetch(end_points.expenses + "/" + id, {
           method: "DELETE",
         })
           .then((response) => response.json())
@@ -76,14 +84,14 @@ const Expenses = () => {
           <div className="expense-header-left">
             <div className="expense-logo">
               <span>
-                <i class="fi fi-rr-usd-circle"></i>
+                <i className="fi fi-rr-usd-circle"></i>
               </span>
             </div>
 
             <div className="expense-header-info">
               <span>Gastos</span>
 
-              <span>Listado y control de tus egresos</span>
+              <span>Listado y control de tus ingresos</span>
             </div>
           </div>
 

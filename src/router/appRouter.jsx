@@ -33,7 +33,7 @@ export const routerApp = createBrowserRouter([
     element: <CreateExpense />,
   },
   {
-    path: "/edit-expense",
+    path: "/edit-expense/:id",
     element: <EditExpense />,
   },
 ]);

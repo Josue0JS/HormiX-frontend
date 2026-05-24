@@ -66,7 +66,7 @@ const EditExpense = () => {
         <div className="edit-expense-header-content">
           <div className="edit-expense-header-left">
             <div className="edit-expense-logo">
-              <i class="fi fi-rr-edit"></i>
+              <i className="fi fi-rr-edit"></i>
             </div>
 
             <div className="edit-expense-header-info">
@@ -95,7 +95,7 @@ const EditExpense = () => {
           <div className="edit-expense-card-header">
             <div className="edit-expense-card-info">
               <h2>Formulario</h2>
-              <p>ID ejemplo: 5002</p>
+              <p>ID ejemplo: 502</p>
             </div>
 
             <span className="edit-expense-status">Estado: Borrador</span>

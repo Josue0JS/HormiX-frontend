@@ -1,6 +1,104 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { end_points } from "../services/api";
 
 const CreateExpense = () => {
+  const navigate = useNavigate();
+
+  // Estados del formulario
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    fecha: "",
+    valor: "",
+    icono: "",
+    idUsuario: "",
+    metodoPago: "",
+    categoria: "",
+    recurrente: false,
+    estado: "Activo",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Manejar cambios en los inputs
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Guardar gasto
+  const handleSave = async () => {
+    // Validar campos obligatorios
+    if (
+      !formData.nombre ||
+      !formData.descripcion ||
+      !formData.fecha ||
+      !formData.valor ||
+      !formData.idUsuario ||
+      !formData.metodoPago ||
+      !formData.categoria
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor completa todos los campos",
+        icon: "error",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(end_points.expenses, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          descripcion: formData.descripcion,
+          fecha: formData.fecha,
+          valor: parseFloat(formData.valor),
+          icono: formData.icono || "default-icon",
+          idUsuario: parseInt(formData.idUsuario),
+          metodoPago: formData.metodoPago,
+          categoria: formData.categoria,
+          recurrente: formData.recurrente,
+          estado: formData.estado,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al guardar el gasto");
+      }
+
+      const data = await response.json();
+      console.log("Gasto guardado:", data);
+
+      Swal.fire({
+        title: "Éxito",
+        text: "Gasto guardado correctamente",
+        icon: "success",
+      }).then(() => {
+        navigate("/expenses");
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo guardar el gasto. Intenta de nuevo.",
+        icon: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="create-expense-wrapper">
       <header className="create-expense-header">
@@ -8,7 +106,7 @@ const CreateExpense = () => {
           <div className="create-expense-header-left">
             <div className="create-expense-logo">
               <span>
-                <i class="fi fi-tr-expense"></i>
+                <i className="fi fi-tr-expense"></i>
               </span>
             </div>
 
@@ -39,28 +137,63 @@ const CreateExpense = () => {
 
           <div className="create-expense-form">
             <div className="create-expense-grid">
+              <div className="create-expense-group">
+                <label>Nombre</label>
+
+                <input
+                  placeholder="Ej: Suscripción AWS"
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                />
+              </div>
+
               <div className="create-expense-group create-expense-full">
                 <label>Descripción</label>
 
-                <input placeholder="Ej: Reserva AWS EC2" type="text" />
+                <input
+                  placeholder="Ej: Reserva AWS EC2"
+                  type="text"
+                  name="descripcion"
+                  value={formData.descripcion}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="create-expense-group">
                 <label>Fecha</label>
 
-                <input type="date" />
+                <input
+                  type="date"
+                  name="fecha"
+                  value={formData.fecha}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="create-expense-group">
                 <label>Valor</label>
 
-                <input placeholder="Ej: 1580000" type="number" />
+                <input
+                  placeholder="Ej: 1580000"
+                  type="number"
+                  name="valor"
+                  value={formData.valor}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="create-expense-group create-expense-full">
-                <label>Imagen</label>
+                <label>Ícono</label>
 
-                <input placeholder="Ej: ic-server" type="text" />
+                <input
+                  placeholder="Ej: ic-server"
+                  type="text"
+                  name="icono"
+                  value={formData.icono}
+                  onChange={handleInputChange}
+                />
 
                 <p>Puedes guardar el nombre de un ícono o recurso.</p>
               </div>
@@ -68,26 +201,41 @@ const CreateExpense = () => {
               <div className="create-expense-group">
                 <label>Usuario ID</label>
 
-                <input placeholder="Ej: 1" type="number" />
+                <input
+                  placeholder="Ej: 1"
+                  type="number"
+                  name="idUsuario"
+                  value={formData.idUsuario}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="create-expense-group">
-                <label>Medio pago ID</label>
+                <label>Método de Pago</label>
 
-                <input placeholder="Ej: 104" type="number" />
+                <input
+                  placeholder="Ej: Tarjeta Crédito"
+                  type="text"
+                  name="metodoPago"
+                  value={formData.metodoPago}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="create-expense-group">
-                <label>Comercio ID</label>
+                <label>Categoría</label>
 
-                <input placeholder="Ej: 201" type="number" />
+                <input
+                  placeholder="Ej: Servicios"
+                  type="text"
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleInputChange}
+                />
               </div>
 
-              <div className="create-expense-group">
-                <label>Categoría ID</label>
 
-                <input placeholder="Ej: 303" type="number" />
-              </div>
+              
             </div>
 
             <div className="create-expense-actions">
@@ -95,8 +243,13 @@ const CreateExpense = () => {
                 Cancelar
               </Link>
 
-              <button type="button" className="create-expense-save-btn">
-                Guardar
+              <button
+                type="button"
+                className="create-expense-save-btn"
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                {isLoading ? "Guardando..." : "Guardar"}
               </button>
             </div>
           </div>

@@ -88,7 +88,7 @@ const Register = () => {
         "Usuario registrado",
         "Será redireccionado al login",
         "success",
-        "/"
+        "/login"
       );
     })
 
@@ -222,7 +222,7 @@ const Register = () => {
 
             <p>
               ¿Ya tienes cuenta?
-              <Link to="/">Inicia sesión</Link>
+              <Link to="/login">Inicia sesión</Link>
             </p>
           </form>
         </div>
