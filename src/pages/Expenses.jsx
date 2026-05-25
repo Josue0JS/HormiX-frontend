@@ -184,13 +184,12 @@ const Expenses = () => {
             <table className="expense-table">
               <thead>
                 <tr>
+                  <th>Id</th>
+                  <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Fecha</th>
                   <th>Valor</th>
-                  <th>Imagen</th>
-                  <th>Usuario</th>
                   <th>Medio pago</th>
-                  <th>Comercio</th>
                   <th>Categoría</th>
                   <th>Acciones</th>
                 </tr>
@@ -206,12 +205,14 @@ const Expenses = () => {
                         </div>
 
                         <div className="expense-description-info">
-                          <p>{item.descripcion}</p>
+                          <p>{item.nombre}</p>
 
                           <p>ID: {item.id}</p>
                         </div>
                       </div>
                     </td>
+
+                    <td>{item.descripcion}</td>
 
                     <td>{item.fecha}</td>
 
@@ -219,21 +220,9 @@ const Expenses = () => {
                       <span className="expense-value">$ {item.valor}</span>
                     </td>
 
-                    <td>
-                      <img
-                        src={item.imagen}
-                        alt={item.descripcion}
-                        width="70"
-                      />
-                    </td>
+                    <td>{item.metodoPago}</td>
 
-                    <td>{item.usuarioId}</td>
-
-                    <td>{item.medioPagoId}</td>
-
-                    <td>{item.comercioId}</td>
-
-                    <td>{item.categoriaId}</td>
+                    <td>{item.categoria}</td>
 
                     <td>
                       <div className="expense-actions">

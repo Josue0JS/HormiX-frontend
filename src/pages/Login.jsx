@@ -75,7 +75,7 @@ const Login = () => {
         "Error de credenciales",
         "Esta ventana se cerrará en ",
         "error",
-        "/",
+        "/login",
       );
     }
   }
