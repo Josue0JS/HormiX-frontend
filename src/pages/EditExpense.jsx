@@ -138,11 +138,6 @@ const EditExpense = () => {
       <main className="edit-expense-main">
         <section className="edit-expense-title-section">
           <h1>Editar Expense</h1>
-
-          <p>
-            Campos según el modelo (sin el id). Valores precargados como
-            referencia visual.
-          </p>
         </section>
 
         <section className="edit-expense-card">
