@@ -184,78 +184,50 @@ const Expenses = () => {
             <table className="expense-table">
               <thead>
                 <tr>
+                  <th>Id</th>
+                  <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Fecha</th>
                   <th>Valor</th>
-                  <th>Imagen</th>
-                  <th>Usuario</th>
                   <th>Medio pago</th>
-                  <th>Comercio</th>
                   <th>Categoría</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
 
               <tbody>
-                {filteredExpenses.map((item) => (
-                  <tr key={item.id} className="expense-row">
-                    <td>
-                      <div className="expense-description">
-                        <div className="expense-id">
-                          <span>{item.id}</span>
-                        </div>
+  {filteredExpenses.map((item) => (
+    <tr key={item.id} className="expense-row">
+      <td>
+        <div className="expense-id">
+          <span>{item.id}</span>
+        </div>
+      </td>
 
-                        <div className="expense-description-info">
-                          <p>{item.descripcion}</p>
+      <td>
+        <div className="expense-description-info">
+          <p>{item.nombre}</p>
+          <p>ID: {item.id}</p>
+        </div>
+      </td>
 
-                          <p>ID: {item.id}</p>
-                        </div>
-                      </div>
-                    </td>
+      <td>{item.descripcion}</td>
+      <td>{item.fecha}</td>
+      <td><span className="expense-value">$ {item.valor}</span></td>
+      <td>{item.metodoPago}</td>
+      <td>{item.categoria}</td>
+      <td>
+        <div className="expense-actions">
+          <Link to={"/edit-expense/" + item.id} className="expense-edit-btn">Editar</Link>
+          <button onClick={() => deleteExpense(item.id)} type="button" className="expense-delete-btn">
+            Eliminar
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-                    <td>{item.fecha}</td>
-
-                    <td>
-                      <span className="expense-value">$ {item.valor}</span>
-                    </td>
-
-                    <td>
-                      <img
-                        src={item.imagen}
-                        alt={item.descripcion}
-                        width="70"
-                      />
-                    </td>
-
-                    <td>{item.usuarioId}</td>
-
-                    <td>{item.medioPagoId}</td>
-
-                    <td>{item.comercioId}</td>
-
-                    <td>{item.categoriaId}</td>
-
-                    <td>
-                      <div className="expense-actions">
-                        <Link
-                          to={"/edit-expense/" + item.id}
-                          className="expense-edit-btn"
-                        >
-                          Editar
-                        </Link>
-
-                        <button
-                          onClick={() => deleteExpense(item.id)}
-                          type="button"
-                          className="expense-delete-btn"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
             </table>
           </div>
 
