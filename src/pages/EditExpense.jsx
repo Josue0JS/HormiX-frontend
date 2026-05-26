@@ -4,48 +4,87 @@ import { useState, useEffect } from "react";
 import { redirectAlert } from "../helpers/alert";
 
 const EditExpense = () => {
-  const [getExpense, setExpense] = useState({});
-  const [descripcion, setDescripcion] = useState("");
-  const [fecha, setFecha] = useState("");
-  const [valor, setValor] = useState(0);
-  const [imagen, setImagen] = useState("");
-  const [usuarioId, setUsuarioId] = useState("");
-  const [medioPagoId, setMedioPagoId] = useState("");
-  const [comercioId, setComercioId] = useState("");
-  const [categoriaId, setCategoriaId] = useState("");
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    fecha: "",
+    valor: "",
+    icono: "",
+    idUsuario: "",
+    metodoPago: "",
+    categoria: "",
+    recurrente: false,
+    estado: "Activo",
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
   let { id } = useParams();
+
   function fetchExpenses() {
-    fetch(end_points.expenses + id)
-      .then((reponse) => reponse.json())
+    fetch(end_points.expenses + id, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error al cargar el gasto");
+        }
+        return response.json();
+      })
       .then((data) => {
-        setExpense(data);
-        setDescripcion(data.descripcion);
-        setFecha(data.fecha);
-        setValor(data.valor);
-        setImagen(data.imagen);
-        setUsuarioId(data.usuarioId);
-        setMedioPagoId(data.medioPagoId);
-        setComercioId(data.comercioId);
-        setCategoriaId(data.categoriaId);
+        console.log("Gasto cargado:", data);
+        setFormData({
+          nombre: data.nombre || "",
+          descripcion: data.descripcion || "",
+          fecha: data.fecha || "",
+          valor: data.valor || "",
+          icono: data.icono || "",
+          idUsuario: data.idUsuario || "",
+          metodoPago: data.metodoPago || "",
+          categoria: data.categoria || "",
+          recurrente: data.recurrente || false,
+          estado: data.estado || "Activo",
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
       });
   }
+
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [id]);
+
+  // Manejar cambios en los inputs
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   function updateExpense() {
     let expense = {
-      descripcion,
-      fecha,
-      valor,
-      imagen,
-      usuarioId,
-      medioPagoId,
-      comercioId,
-      categoriaId,
+      nombre: formData.nombre,
+      descripcion: formData.descripcion,
+      fecha: formData.fecha,
+      valor: parseFloat(formData.valor),
+      icono: formData.icono || "default-icon",
+      idUsuario: parseInt(formData.idUsuario),
+      metodoPago: formData.metodoPago,
+      categoria: formData.categoria,
+      recurrente: formData.recurrente,
+      estado: formData.estado,
     };
     fetch(end_points.expenses + id, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(expense),
     })
       .then((response) => response.json())
@@ -72,7 +111,7 @@ const EditExpense = () => {
             <div className="edit-expense-header-info">
               <span>Editar gasto</span>
               <span>Mismo formulario con valores de ejemplo</span>
-            </div>
+            </div>  
           </div>
 
           <Link to="/expenses" className="edit-expense-back-btn">
@@ -93,25 +132,32 @@ const EditExpense = () => {
 
         <section className="edit-expense-card">
           <div className="edit-expense-card-header">
-            <div className="edit-expense-card-info">
-              <h2>Formulario</h2>
-              <p>ID ejemplo: 502</p>
-            </div>
-
-            <span className="edit-expense-status">Estado: Borrador</span>
+            <h2>Formulario</h2>
           </div>
 
           <div className="edit-expense-form">
             <div className="edit-expense-grid">
+              <div className="edit-expense-group">
+                <label>Nombre</label>
+
+                <input
+                  placeholder="Ej: Suscripción AWS"
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                />
+              </div>
+
               <div className="edit-expense-group edit-expense-full">
                 <label>Descripción</label>
 
                 <input
-                  defaultValue="Reserva AWS EC2 - Proyecto Final"
-                  placeholder="Descripción"
+                  placeholder="Ej: Reserva AWS EC2"
                   type="text"
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
+                  name="descripcion"
+                  value={formData.descripcion}
+                  onChange={handleInputChange}
                 />
               </div>
 
@@ -119,10 +165,10 @@ const EditExpense = () => {
                 <label>Fecha</label>
 
                 <input
-                  defaultValue="2026-03-02"
                   type="date"
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
+                  name="fecha"
+                  value={formData.fecha}
+                  onChange={handleInputChange}
                 />
               </div>
 
@@ -130,74 +176,61 @@ const EditExpense = () => {
                 <label>Valor</label>
 
                 <input
-                  value={valor}
-                  placeholder="Valor"
+                  placeholder="Ej: 1580000"
                   type="number"
-                  onChange={(e) => setValor(e.target.value)}
+                  name="valor"
+                  value={formData.valor}
+                  onChange={handleInputChange}
                 />
               </div>
 
               <div className="edit-expense-group edit-expense-full">
-                <label>Imagen (texto)</label>
+                <label>Ícono</label>
 
                 <input
-                  value={imagen}
-                  placeholder="ic-server"
+                  placeholder="Ej: ic-server"
                   type="text"
-                  onChange={(e) => setImagen(e.target.value)}
+                  name="icono"
+                  value={formData.icono}
+                  onChange={handleInputChange}
                 />
 
-                <div className="edit-expense-preview">
-                  <p>Preview</p>
-
-                  <span>
-                    Icono:
-                    <strong> ic-server</strong>
-                  </span>
-                </div>
+                <p>Puedes guardar el nombre de un ícono o recurso.</p>
               </div>
 
               <div className="edit-expense-group">
                 <label>Usuario ID</label>
 
                 <input
-                  value={usuarioId}
-                  placeholder="1"
+                  placeholder="Ej: 1"
                   type="number"
-                  onChange={(e) => setUsuarioId(e.target.value)}
+                  name="idUsuario"
+                  value={formData.idUsuario}
+                  onChange={handleInputChange}
                 />
               </div>
 
               <div className="edit-expense-group">
-                <label>Medio de pago ID</label>
+                <label>Método de Pago</label>
 
                 <input
-                  value={medioPagoId}
-                  placeholder="104"
-                  type="number"
-                  onChange={(e) => setMedioPagoId(e.target.value)}
+                  placeholder="Ej: Tarjeta Crédito"
+                  type="text"
+                  name="metodoPago"
+                  value={formData.metodoPago}
+                  onChange={handleInputChange}
                 />
               </div>
 
               <div className="edit-expense-group">
-                <label>Comercio ID</label>
+                <label>Categoría</label>
 
                 <input
-                  value={comercioId}
-                  placeholder="201"
-                  type="number"
-                  onChange={(e) => setComercioId(e.target.value)}
-                />
-              </div>
-
-              <div className="edit-expense-group">
-                <label>Categoría ID</label>
-
-                <input
-                  value={categoriaId}
-                  placeholder="303"
-                  type="number"
-                  onChange={(e) => setCategoriaId(e.target.value)}
+                  placeholder="Ej: Servicios"
+                  type="text"
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -209,8 +242,8 @@ const EditExpense = () => {
 
               <button
                 type="button"
-                onClick={updateExpense}
                 className="edit-expense-save-btn"
+                onClick={updateExpense}
               >
                 Guardar cambios
               </button>
