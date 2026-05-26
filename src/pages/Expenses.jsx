@@ -129,7 +129,7 @@ const Expenses = () => {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Descripción, comercio..."
+                placeholder="Descripción, nombre..."
                 type="text"
               />
             </div>
@@ -218,7 +218,7 @@ const Expenses = () => {
       <td>{item.categoria}</td>
       <td>
         <div className="expense-actions">
-          <Link to={"/edit-expense/" + item.id} className="expense-edit-btn">Editar</Link>
+          <Link to={`/editExpense/${item.id}`} className="expense-edit-btn">Editar</Link>
           <button onClick={() => deleteExpense(item.id)} type="button" className="expense-delete-btn">
             Eliminar
           </button>

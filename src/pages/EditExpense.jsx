@@ -21,7 +21,7 @@ const EditExpense = () => {
   let { id } = useParams();
 
   function fetchExpenses() {
-    fetch(end_points.expenses + id, {
+    fetch(`${end_points.expenses}/${id}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -37,7 +37,7 @@ const EditExpense = () => {
         setFormData({
           nombre: data.nombre || "",
           descripcion: data.descripcion || "",
-          fecha: data.fecha || "",
+          fecha: data.fecha ? data.fecha.split("/").reverse().join("-") : "",
           valor: data.valor || "",
           icono: data.icono || "",
           idUsuario: data.idUsuario || "",
@@ -80,22 +80,37 @@ const EditExpense = () => {
       recurrente: formData.recurrente,
       estado: formData.estado,
     };
-    fetch(end_points.expenses + id, {
-      method: "PATCH",
+
+    console.log("Expense enviada:", expense);
+
+    fetch(`${end_points.expenses}/${id}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(expense),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("STATUS:", response.status);
+
+        if (!response.ok) {
+          throw new Error("Error al actualizar el gasto");
+        }
+
+        return response.json();
+      })
       .then((data) => {
-        console.log(data);
+        console.log("RESPUESTA:", data);
+
         redirectAlert(
           "Cambios realizados",
           "Será redireccionado en un momento",
           "success",
           "/expenses",
         );
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }
 
@@ -111,7 +126,7 @@ const EditExpense = () => {
             <div className="edit-expense-header-info">
               <span>Editar gasto</span>
               <span>Mismo formulario con valores de ejemplo</span>
-            </div>  
+            </div>
           </div>
 
           <Link to="/expenses" className="edit-expense-back-btn">
