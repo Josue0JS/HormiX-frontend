@@ -66,8 +66,8 @@ const Expenses = () => {
   // Filtros
   const filteredExpenses = getExpenses.filter((item) => {
     const matchesSearch =
-      item.descripcion?.toLowerCase().includes(search.toLowerCase()) ||
-      item.comercioId?.toString().includes(search);
+      item.nombre?.toLowerCase().includes(search.toLowerCase()) ||
+      item.id?.toString().includes(search);
 
     const matchesCategory =
       category === "" || item.categoriaId?.toString() === category;
@@ -141,13 +141,37 @@ const Expenses = () => {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                <option value="">Todas</option>
+                <option value="">Selecciona una categoría</option>
 
-                <option value="303">Servicios</option>
+                  <option value="Servicios">Servicios</option>
 
-                <option value="304">Transporte</option>
+                  <option value="Comida">Comida</option>
 
-                <option value="305">Alimentación</option>
+                  <option value="Transporte">Transporte</option>
+
+                  <option value="Entretenimiento">Entretenimiento</option>
+
+                  <option value="Salud">Salud</option>
+
+                  <option value="Educación">Educación</option>
+
+                  <option value="Tecnología">Tecnología</option>
+
+                  <option value="Hogar">Hogar</option>
+
+                  <option value="Mascotas">Mascotas</option>
+
+                  <option value="Viajes">Viajes</option>
+
+                  <option value="Ropa">Ropa</option>
+
+                  <option value="Impuestos">Impuestos</option>
+
+                  <option value="Suscripciones">Suscripciones</option>
+
+                  <option value="Ahorro">Ahorro</option>
+
+                  <option value="Otros">Otros</option>
               </select>
             </div>
 

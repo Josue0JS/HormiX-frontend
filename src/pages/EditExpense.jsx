@@ -2,15 +2,18 @@ import { Link, useParams } from "react-router-dom";
 import { end_points } from "../services/api";
 import { useState, useEffect } from "react";
 import { redirectAlert } from "../helpers/alert";
+import { getLocalStorage } from "../helpers/local-storage";
 
 const EditExpense = () => {
+  const user = getLocalStorage("user");
+  console.log(user);
+
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
     fecha: "",
     valor: "",
     icono: "",
-    idUsuario: "",
     metodoPago: "",
     categoria: "",
     recurrente: false,
@@ -40,7 +43,7 @@ const EditExpense = () => {
           fecha: data.fecha ? data.fecha.split("/").reverse().join("-") : "",
           valor: data.valor || "",
           icono: data.icono || "",
-          idUsuario: data.idUsuario || "",
+          idUsuario: user?.id,
           metodoPago: data.metodoPago || "",
           categoria: data.categoria || "",
           recurrente: data.recurrente || false,
@@ -69,19 +72,18 @@ const EditExpense = () => {
 
   function updateExpense() {
     let expense = {
+      id: parseInt(id),
       nombre: formData.nombre,
       descripcion: formData.descripcion,
       fecha: formData.fecha,
       valor: parseFloat(formData.valor),
       icono: formData.icono || "default-icon",
-      idUsuario: parseInt(formData.idUsuario),
+      idUsuario: user?.id,
       metodoPago: formData.metodoPago,
       categoria: formData.categoria,
       recurrente: formData.recurrente,
       estado: formData.estado,
     };
-
-    console.log("Expense enviada:", expense);
 
     fetch(`${end_points.expenses}/${id}`, {
       method: "POST",
@@ -91,17 +93,13 @@ const EditExpense = () => {
       body: JSON.stringify(expense),
     })
       .then((response) => {
-        console.log("STATUS:", response.status);
-
         if (!response.ok) {
-          throw new Error("Error al actualizar el gasto");
+          throw new Error("Error al actualizar");
         }
 
         return response.json();
       })
-      .then((data) => {
-        console.log("RESPUESTA:", data);
-
+      .then(() => {
         redirectAlert(
           "Cambios realizados",
           "Será redireccionado en un momento",
@@ -209,39 +207,62 @@ const EditExpense = () => {
               </div>
 
               <div className="edit-expense-group">
-                <label>Usuario ID</label>
-
-                <input
-                  placeholder="Ej: 1"
-                  type="number"
-                  name="idUsuario"
-                  value={formData.idUsuario}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="edit-expense-group">
                 <label>Método de Pago</label>
 
-                <input
-                  placeholder="Ej: Tarjeta Crédito"
-                  type="text"
+                <select
                   name="metodoPago"
                   value={formData.metodoPago}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona un método</option>
+                  <option value="Transferencia">Transferencia</option>
+                  <option value="Tarjeta Débito">Tarjeta Débito</option>
+                  <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                  <option value="PSE">PSE</option>
+                  <option value="Efectivo">Efectivo</option>
+                </select>
               </div>
 
               <div className="edit-expense-group">
                 <label>Categoría</label>
 
-                <input
-                  placeholder="Ej: Servicios"
-                  type="text"
+                <select
                   name="categoria"
                   value={formData.categoria}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona una categoría</option>
+
+                  <option value="Servicios">Servicios</option>
+
+                  <option value="Comida">Comida</option>
+
+                  <option value="Transporte">Transporte</option>
+
+                  <option value="Entretenimiento">Entretenimiento</option>
+
+                  <option value="Salud">Salud</option>
+
+                  <option value="Educación">Educación</option>
+
+                  <option value="Tecnología">Tecnología</option>
+
+                  <option value="Hogar">Hogar</option>
+
+                  <option value="Mascotas">Mascotas</option>
+
+                  <option value="Viajes">Viajes</option>
+
+                  <option value="Ropa">Ropa</option>
+
+                  <option value="Impuestos">Impuestos</option>
+
+                  <option value="Suscripciones">Suscripciones</option>
+
+                  <option value="Ahorro">Ahorro</option>
+
+                  <option value="Otros">Otros</option>
+                </select>
               </div>
             </div>
 

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { end_points } from "../services/api";
+import { getLocalStorage } from "../helpers/local-storage";
 
 const CreateExpense = () => {
   const navigate = useNavigate();
+  const user = getLocalStorage("user");
 
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -13,7 +15,6 @@ const CreateExpense = () => {
     fecha: "",
     valor: "",
     icono: "",
-    idUsuario: "",
     metodoPago: "",
     categoria: "",
     recurrente: false,
@@ -25,6 +26,7 @@ const CreateExpense = () => {
   // Manejar cambios en los inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({
       ...formData,
       [name]: value,
@@ -39,7 +41,6 @@ const CreateExpense = () => {
       !formData.descripcion ||
       !formData.fecha ||
       !formData.valor ||
-      !formData.idUsuario ||
       !formData.metodoPago ||
       !formData.categoria
     ) {
@@ -48,6 +49,7 @@ const CreateExpense = () => {
         text: "Por favor completa todos los campos",
         icon: "error",
       });
+
       return;
     }
 
@@ -56,16 +58,18 @@ const CreateExpense = () => {
     try {
       const response = await fetch(end_points.expenses, {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           nombre: formData.nombre,
           descripcion: formData.descripcion,
           fecha: formData.fecha,
           valor: parseFloat(formData.valor),
           icono: formData.icono || "default-icon",
-          idUsuario: parseInt(formData.idUsuario),
+          idUsuario: user?.id,
           metodoPago: formData.metodoPago,
           categoria: formData.categoria,
           recurrente: formData.recurrente,
@@ -78,6 +82,7 @@ const CreateExpense = () => {
       }
 
       const data = await response.json();
+
       console.log("Gasto guardado:", data);
 
       Swal.fire({
@@ -87,13 +92,17 @@ const CreateExpense = () => {
       }).then(() => {
         navigate("/expenses");
       });
+
     } catch (error) {
+
       console.error("Error:", error);
+
       Swal.fire({
         title: "Error",
         text: "No se pudo guardar el gasto. Intenta de nuevo.",
         icon: "error",
       });
+
     } finally {
       setIsLoading(false);
     }
@@ -101,9 +110,12 @@ const CreateExpense = () => {
 
   return (
     <div className="create-expense-wrapper">
+
       <header className="create-expense-header">
         <div className="create-expense-header-content">
+
           <div className="create-expense-header-left">
+
             <div className="create-expense-logo">
               <span>
                 <i className="fi fi-tr-expense"></i>
@@ -115,28 +127,39 @@ const CreateExpense = () => {
 
               <span>Registro de un nuevo expense</span>
             </div>
+
           </div>
 
-          <Link to="/expenses" className="create-expense-back-btn">
+          <Link
+            to="/expenses"
+            className="create-expense-back-btn"
+          >
             Volver
           </Link>
+
         </div>
       </header>
 
       <main className="create-expense-main">
+
         <section className="create-expense-title">
+
           <h1>Registrar Expense</h1>
 
-          <p>Completa los campos del modelo (sin el id).</p>
+          <p>Completa todos los campos.</p>
+
         </section>
 
         <section className="create-expense-card">
+
           <div className="create-expense-card-header">
             <h2>Formulario</h2>
           </div>
 
           <div className="create-expense-form">
+
             <div className="create-expense-grid">
+
               <div className="create-expense-group">
                 <label>Nombre</label>
 
@@ -199,47 +222,120 @@ const CreateExpense = () => {
               </div>
 
               <div className="create-expense-group">
-                <label>Usuario ID</label>
-
-                <input
-                  placeholder="Ej: 1"
-                  type="number"
-                  name="idUsuario"
-                  value={formData.idUsuario}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="create-expense-group">
                 <label>Método de Pago</label>
 
-                <input
-                  placeholder="Ej: Tarjeta Crédito"
-                  type="text"
+                <select
                   name="metodoPago"
                   value={formData.metodoPago}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona un método</option>
+
+                  <option value="Transferencia">
+                    Transferencia
+                  </option>
+
+                  <option value="Tarjeta Débito">
+                    Tarjeta Débito
+                  </option>
+
+                  <option value="Tarjeta Crédito">
+                    Tarjeta Crédito
+                  </option>
+
+                  <option value="PSE">PSE</option>
+
+                  <option value="Efectivo">
+                    Efectivo
+                  </option>
+                </select>
               </div>
 
               <div className="create-expense-group">
+
                 <label>Categoría</label>
 
-                <input
-                  placeholder="Ej: Servicios"
-                  type="text"
+                <select
                   name="categoria"
                   value={formData.categoria}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">
+                    Selecciona una categoría
+                  </option>
+
+                  <option value="Servicios">
+                    Servicios
+                  </option>
+
+                  <option value="Comida">
+                    Comida
+                  </option>
+
+                  <option value="Transporte">
+                    Transporte
+                  </option>
+
+                  <option value="Entretenimiento">
+                    Entretenimiento
+                  </option>
+
+                  <option value="Salud">
+                    Salud
+                  </option>
+
+                  <option value="Educación">
+                    Educación
+                  </option>
+
+                  <option value="Tecnología">
+                    Tecnología
+                  </option>
+
+                  <option value="Hogar">
+                    Hogar
+                  </option>
+
+                  <option value="Mascotas">
+                    Mascotas
+                  </option>
+
+                  <option value="Viajes">
+                    Viajes
+                  </option>
+
+                  <option value="Ropa">
+                    Ropa
+                  </option>
+
+                  <option value="Impuestos">
+                    Impuestos
+                  </option>
+
+                  <option value="Suscripciones">
+                    Suscripciones
+                  </option>
+
+                  <option value="Ahorro">
+                    Ahorro
+                  </option>
+
+                  <option value="Otros">
+                    Otros
+                  </option>
+
+                </select>
+
               </div>
 
-
-              
             </div>
 
             <div className="create-expense-actions">
-              <Link to="/expenses" className="create-expense-cancel-btn">
+
+              <Link
+                to="/expenses"
+                className="create-expense-cancel-btn"
+              >
                 Cancelar
               </Link>
 
@@ -251,10 +347,15 @@ const CreateExpense = () => {
               >
                 {isLoading ? "Guardando..." : "Guardar"}
               </button>
+
             </div>
+
           </div>
+
         </section>
+
       </main>
+
     </div>
   );
 };

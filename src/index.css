@@ -1083,6 +1083,22 @@ body {
   color: #777;
 }
 
+.create-expense-group select {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #dcdcdc;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 15px;
+  background: white;
+  outline: none;
+  transition: 0.2s;
+}
+
+.create-expense-group select:focus {
+  border-color: #ff7a00;
+}
+
 .create-expense-card {
   background: #ffffff75;
   border-radius: 25px;
@@ -1303,6 +1319,22 @@ body {
   font-size: 14px;
   color: #777;
   margin-top: 3px;
+}
+
+.edit-expense-group select {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #dcdcdc;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 15px;
+  background: white;
+  outline: none;
+  transition: 0.2s;
+}
+
+.edit-expense-group select:focus {
+  border-color: #ff7a00;
 }
 
 .edit-expense-back-btn {
