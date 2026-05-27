@@ -70,7 +70,7 @@ const Expenses = () => {
       item.id?.toString().includes(search);
 
     const matchesCategory =
-      category === "" || item.categoriaId?.toString() === category;
+      category === "" || item.categoria?.toString() === category;
 
     const matchesMonth = month === "" || item.fecha?.startsWith(month);
 
