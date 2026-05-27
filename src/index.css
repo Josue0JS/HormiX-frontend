@@ -334,6 +334,7 @@ body {
   padding: 12px 18px;
   border-radius: 12px;
   color: #333;
+  text-decoration: none;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
@@ -726,7 +727,7 @@ body {
 }
 
 .expense-delete-btn {
-  background: #b30d0d;
+  background: #be0000;
   border: none;
   padding: 10px 18px;
   border-radius: 12px;

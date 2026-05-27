@@ -1,22 +1,96 @@
-import { getLocalStorage, removeLocalStorage } from "../helpers/local-storage";
-import { redirectAlert } from "../helpers/alert";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
+
+import { getLocalStorage, removeLocalStorage } from "../helpers/local-storage";
+
+import { redirectAlert } from "../helpers/alert";
+
 const Dashboard = () => {
-  let user = getLocalStorage("user");
+  const user = getLocalStorage("user");
+
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/hormixapi/v1/dashboard/stats/${user.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        // CATEGORÍAS
+        const categoriesFormatted = data.categories.map((item) => ({
+          name: item[0],
+          value: item[1],
+        }));
+
+        // MESES
+        const months = [
+          "",
+          "Ene",
+          "Feb",
+          "Mar",
+          "Abr",
+          "May",
+          "Jun",
+          "Jul",
+          "Ago",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dic",
+        ];
+
+        const monthlyFormatted = data.monthlyExpenses.map((item) => ({
+          month: months[item[0]],
+          total: item[1],
+        }));
+
+        // PROMEDIO
+        const average =
+          data.totalExpenses / (data.recentTransactions.length || 1);
+
+        setStats({
+          ...data,
+          categoriesFormatted,
+          monthlyFormatted,
+          average,
+        });
+      })
+      .catch((error) => {
+        console.error("Error dashboard:", error);
+      });
+  }, []);
 
   function logout() {
+    const COLORS = ["#ff7a00", "#ff9333", "#ffad66", "#ffc799", "#ffe0cc"];
     removeLocalStorage("user");
+
     redirectAlert(
       "Sesión cerrada",
       "Has cerrado la sesión correctamente",
       "success",
-      "/login"
+      "/login",
     );
   }
 
+  const COLORS = ["#ff7a00", "#ff9333", "#ffad66", "#ffc799", "#ffe0cc"];
+
   return (
     <div className="dashboard-wrapper">
+      {/* HEADER */}
+
       <header className="dashboard-header">
         <div className="dashboard-header-content">
           <div className="dashboard-user">
@@ -27,115 +101,177 @@ const Dashboard = () => {
             </div>
 
             <div className="dashboard-user-info">
-               <span>{user.nombre || "Usuario"}</span>
-              <span>{user.documento || "Documento"}</span> 
+              <span>{user?.nombre || "Usuario"}</span>
+
+              <span>{user?.documento || "Documento"}</span>
             </div>
           </div>
 
           <div className="dashboard-header-buttons">
             <Link to="/expenses" className="dashboard-primary-btn">
-              Ver Gastos
+              Ver gastos
             </Link>
 
-            <button type="button" className="dashboard-secondary-btn" onClick={logout}>
-              cerrar sesión
-              <i className="fi fi-rr-logout"></i>
+            <button
+              type="button"
+              className="dashboard-secondary-btn"
+              onClick={logout}
+            >
+              Cerrar sesión
             </button>
           </div>
         </div>
       </header>
 
+      {/* MAIN */}
+
       <main className="dashboard-main">
         <section className="dashboard-overview">
-          <h1>Overview</h1>
+          <h1>Hola, {user?.nombre}</h1>
 
-          <p>A quick snapshot of your finances.</p>
+          <p>Este es el resumen de tus finanzas.</p>
         </section>
 
+        {/* CARDS */}
+
         <section className="dashboard-cards">
+          {/* TOTAL */}
+
           <div className="dashboard-card">
             <div className="dashboard-card-header">
               <div className="dashboard-card-info">
-                <p>Balance</p>
+                <p>Total gastos</p>
 
-                <h2>$ 2,450.00</h2>
+                <h2>${stats?.totalExpenses?.toLocaleString("es-CO") || 0}</h2>
               </div>
 
               <div className="dashboard-card-icon">
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 6v12m6-6H6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  ></path>
-                </svg>
+                <i className="fi fi-rr-wallet"></i>
               </div>
             </div>
 
-            <p className="dashboard-card-text">Updated just now</p>
+            <p className="dashboard-card-text">Gastos acumulados registrados</p>
           </div>
+
+          {/* CATEGORIA */}
 
           <div className="dashboard-card">
             <div className="dashboard-card-header">
               <div className="dashboard-card-info">
-                <p>Income (month)</p>
+                <p>Categoría top</p>
 
-                <h2>$ 3,200.00</h2>
+                <h2>{stats?.categoriesFormatted?.[0]?.name || "Sin datos"}</h2>
               </div>
 
               <div className="dashboard-card-icon">
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 17l10-10M10 7h7v7"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
+                <i className="fi fi-rr-chart-pie"></i>
               </div>
             </div>
 
-            <p className="dashboard-card-text">Compared to last month</p>
+            <p className="dashboard-card-text">Categoría con mayor consumo</p>
           </div>
+
+          {/* MOVIMIENTOS */}
 
           <div className="dashboard-card">
             <div className="dashboard-card-header">
               <div className="dashboard-card-info">
-                <p>Expenses (month)</p>
+                <p>Movimientos</p>
 
-                <h2>$ 750.00</h2>
+                <h2>{stats?.recentTransactions?.length || 0}</h2>
               </div>
 
               <div className="dashboard-card-danger-icon">
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17 7L7 17M7 7h10v10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
+                <i className="fi fi-rr-exchange"></i>
               </div>
             </div>
 
-            <p className="dashboard-card-text">Keep an eye on subscriptions</p>
+            <p className="dashboard-card-text">
+              Últimos movimientos registrados
+            </p>
           </div>
         </section>
+
+        {/* CHARTS */}
+
+        <section className="dashboard-content">
+          {/* LINE CHART */}
+
+          <div className="dashboard-transactions">
+            <div className="dashboard-section-header">
+              <div className="dashboard-section-info">
+                <h2>Gastos mensuales</h2>
+
+                <p>Comportamiento mensual de gastos</p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                height: "320px",
+                marginTop: "20px",
+              }}
+            >
+              <ResponsiveContainer>
+                <LineChart data={stats?.monthlyFormatted || []}>
+                  <CartesianGrid strokeDasharray="3 3" />
+
+                  <XAxis dataKey="month" />
+
+                  <YAxis />
+
+                  <Tooltip />
+
+                  <Line
+                    type="monotone"
+                    dataKey="total"
+                    stroke="#ff7a00"
+                    strokeWidth={3}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* PIE CHART */}
+
+          <div className="dashboard-actions-card">
+            <div className="dashboard-section-info">
+              <h2>Categorías</h2>
+
+              <p>Distribución de gastos</p>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                height: "300px",
+                marginTop: "20px",
+              }}
+            >
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={stats?.categoriesFormatted || []}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={90}
+                    label
+                  >
+                    {stats?.categoriesFormatted?.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </section>
+
+        {/* TRANSACCIONES */}
 
         <section className="dashboard-content">
           <div className="dashboard-transactions">
@@ -143,87 +279,60 @@ const Dashboard = () => {
               <div className="dashboard-section-info">
                 <h2>Transacciones recientes</h2>
 
-                <p>Ultimos movimientos en tu cuenta</p>
+                <p>Últimos movimientos en tu cuenta</p>
               </div>
-
-              <button type="button" className="dashboard-secondary-btn">
-                Ver todos
-              </button>
             </div>
 
             <div className="dashboard-transaction-list">
-              <div className="dashboard-transaction-item">
-                <div className="dashboard-transaction-left">
-                  <div className="dashboard-transaction-icon">
-                    <span>F</span>
+              {stats?.recentTransactions?.map((item) => (
+                <div className="dashboard-transaction-item" key={item.id}>
+                  <div className="dashboard-transaction-left">
+                    <div className="dashboard-transaction-icon">
+                      <span>{item.categoria?.charAt(0)}</span>
+                    </div>
+
+                    <div className="dashboard-transaction-info">
+                      <p>{item.nombre}</p>
+
+                      <span>
+                        {item.fecha} • {item.metodoPago}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="dashboard-transaction-info">
-                    <p>Food</p>
-                    <span>Apr 08 • Card</span>
-                  </div>
+                  <p className="dashboard-expense">
+                    - ${item.valor?.toLocaleString("es-CO")}
+                  </p>
                 </div>
-
-                <p className="dashboard-expense">- $ 24.50</p>
-              </div>
-
-              <div className="dashboard-transaction-item">
-                <div className="dashboard-transaction-left">
-                  <div className="dashboard-transaction-icon">
-                    <span>T</span>
-                  </div>
-
-                  <div className="dashboard-transaction-info">
-                    <p>Transport</p>
-                    <span>Apr 07 • Cash</span>
-                  </div>
-                </div>
-
-                <p className="dashboard-expense">- $ 12.00</p>
-              </div>
-
-              <div className="dashboard-transaction-item">
-                <div className="dashboard-transaction-left">
-                  <div className="dashboard-income-icon">
-                    <span>S</span>
-                  </div>
-
-                  <div className="dashboard-transaction-info">
-                    <p>Salary</p>
-                    <span>Apr 05 • Bank</span>
-                  </div>
-                </div>
-
-                <p className="dashboard-income">+ $ 3,200.00</p>
-              </div>
+              ))}
             </div>
           </div>
 
+          {/* ACTIONS */}
+
           <div className="dashboard-actions-card">
             <div className="dashboard-section-info">
-              <h2>Quick Actions</h2>
+              <h2>Acciones rápidas</h2>
 
-              <p>Shortcuts for common tasks</p>
+              <p>Acciones rápidas para tus transacciones</p>
             </div>
 
             <div className="dashboard-actions">
-              <button type="button" className="dashboard-secondary-btn">
-                Create category
-              </button>
-
-              <button type="button" className="dashboard-secondary-btn">
-                Export report
-              </button>
-
-              <button type="button" className="dashboard-primary-btn">
+              <Link to="/CreateExpense" className="dashboard-primary-btn">
                 Add transaction
-              </button>
+              </Link>
+
+              <Link to="/expenses" className="dashboard-secondary-btn">
+                Ver listado
+              </Link>
             </div>
 
             <div className="dashboard-tip">
               <p>Tip</p>
 
-              <span>Set a monthly budget to keep expenses under control.</span>
+              <span>
+                Reduce gastos en categorías repetitivas para mejorar tu ahorro.
+              </span>
             </div>
           </div>
         </section>
