@@ -3,6 +3,8 @@ import { end_points } from "../services/api";
 import { useState, useEffect } from "react";
 import { redirectAlert } from "../helpers/alert";
 import { getLocalStorage } from "../helpers/local-storage";
+import GestionCategorias from "../components/GestionCategorias";
+import GestionMetodosPago from "../components/GestionMetodosPago";
 
 const EditExpense = () => {
   const user = getLocalStorage("user");
@@ -209,60 +211,19 @@ const EditExpense = () => {
               <div className="edit-expense-group">
                 <label>Método de Pago</label>
 
-                <select
-                  name="metodoPago"
-                  value={formData.metodoPago}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona un método</option>
-                  <option value="Transferencia">Transferencia</option>
-                  <option value="Tarjeta Débito">Tarjeta Débito</option>
-                  <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                  <option value="PSE">PSE</option>
-                  <option value="Efectivo">Efectivo</option>
-                </select>
+                <GestionMetodosPago
+                  valorActual={formData.metodoPago}
+                  onSelect={handleMetodoPagoSelect}
+                />
               </div>
 
               <div className="edit-expense-group">
                 <label>Categoría</label>
 
-                <select
-                  name="categoria"
-                  value={formData.categoria}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una categoría</option>
-
-                  <option value="Servicios">Servicios</option>
-
-                  <option value="Comida">Comida</option>
-
-                  <option value="Transporte">Transporte</option>
-
-                  <option value="Entretenimiento">Entretenimiento</option>
-
-                  <option value="Salud">Salud</option>
-
-                  <option value="Educación">Educación</option>
-
-                  <option value="Tecnología">Tecnología</option>
-
-                  <option value="Hogar">Hogar</option>
-
-                  <option value="Mascotas">Mascotas</option>
-
-                  <option value="Viajes">Viajes</option>
-
-                  <option value="Ropa">Ropa</option>
-
-                  <option value="Impuestos">Impuestos</option>
-
-                  <option value="Suscripciones">Suscripciones</option>
-
-                  <option value="Ahorro">Ahorro</option>
-
-                  <option value="Otros">Otros</option>
-                </select>
+                <GestionCategorias
+                  valorActual={formData.categoria}
+                  onSelect={handleCategoriaSelect}
+                />
               </div>
             </div>
 

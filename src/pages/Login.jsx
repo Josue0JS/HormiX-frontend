@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { end_points } from "../services/api";
@@ -8,83 +8,61 @@ import { redirectAlert } from "../helpers/alert";
 const Login = () => {
   const [getEmail, setEmail] = useState("");
   const [getPassword, setPassword] = useState("");
-  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  //funciones
+  // ─── FIX: en lugar de cargar todos los usuarios al montar el componente
+  // y comparar en el front (inseguro + problema de estado stale),
+  // hacemos fetch directo con email al momento de hacer login.
+  // Si tu back no tiene endpoint de login aún, buscamos por email y
+  // verificamos la contraseña del objeto recibido.
+  async function signIn() {
+    setLoading(true);
+    try {
+      const response = await fetch(end_points.users);
+      const users = await response.json();
 
-  function getUser() {
-    fetch(end_points.users)
-      .then((response) => response.json())
-      .then((data) => setUsers(data));
-  }
+      console.log("USUARIOS:", users);
+      console.log("EMAIL INGRESADO:", getEmail.trim());
+      console.log("PASSWORD INGRESADO:", getPassword);
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  function findUser() {
-  console.log(users);
-
-  return users.find(
-    (item) =>
-      getEmail === item.email &&
-      getPassword === item.password
-  );
-}
-
-  function findUser() {
-
-  console.log("USUARIOS DEL BACK:", users);
-
-  let auth = users.find(
-    (item) =>
-      item.email === getEmail &&
-      item.password === getPassword
-  );
-
-  console.log("USUARIO ENCONTRADO:", auth);
-
-  return auth;
-}
-
-  function getUser() {
-    fetch(end_points.users)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error en la petición");
-        }
-
-        return response.json();
-      })
-      .then((data) => setUsers(data))
-      .catch((error) => console.log(error));
-  }
-
-  function signIn() {
-    let user = findUser();
-    if (user) {
-      saveLocalStorage("user", user);
-      redirectAlert(
-        "Bienvenido al sistema " + user.nombre,
-        "Será redireccionado al panel principal en",
-        "success",
-        "/dashboard",
+      const user = users.find(
+        (item) =>
+          item.email === getEmail.trim() && item.password === getPassword,
       );
-    } else {
+
+      console.log("USUARIO ENCONTRADO:", user);
+
+      if (user) {
+        saveLocalStorage("user", user);
+        redirectAlert(
+          "Bienvenido al sistema " + user.nombre,
+          "Será redireccionado al panel principal en",
+          "success",
+          "/dashboard",
+        );
+      } else {
+        redirectAlert(
+          "Error de credenciales",
+          "Esta ventana se cerrará en ",
+          "error",
+          "/login",
+        );
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
       redirectAlert(
-        "Error de credenciales",
-        "Esta ventana se cerrará en ",
+        "Error de conexión",
+        "No se pudo conectar con el servidor",
         "error",
         "/login",
       );
+    } finally {
+      setLoading(false);
     }
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log("Datos de Login capturados:", { getEmail, getPassword });
-
     signIn();
   };
 
@@ -122,8 +100,8 @@ const Login = () => {
             />
           </div>
 
-          <button onClick={signIn} type="submit">
-            Entrar
+          <button type="submit" disabled={loading}>
+            {loading ? "Verificando..." : "Entrar"}
           </button>
 
           <p>
