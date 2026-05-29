@@ -70,7 +70,7 @@ const GestionCategorias = ({ onSelect, valorActual }) => {
           id: modoEdicion?.id,
           nombre: form.nombre.trim(),
           descripcion: form.descripcion.trim(),
-          estado: "ACTIVO",
+          estado: "Activo",
         }),
       });
 
@@ -142,7 +142,7 @@ const GestionCategorias = ({ onSelect, valorActual }) => {
           onClick={() => setModalAbierto(true)}
           title="Gestionar categorías"
         >
-          <i class="fi fi-rc-settings"></i> Gestionar
+          <i className="fi fi-rc-settings"></i> Gestionar
         </button>
       </div>
 
@@ -235,7 +235,7 @@ const GestionCategorias = ({ onSelect, valorActual }) => {
                       onClick={() => abrirEditar(cat)}
                       title="Editar"
                     >
-                      <i class="fi fi-rr-edit"></i>
+                      <i className="fi fi-rr-edit"></i>
                     </button>
                     <button
                       type="button"
@@ -243,7 +243,7 @@ const GestionCategorias = ({ onSelect, valorActual }) => {
                       onClick={() => eliminar(cat)}
                       title="Eliminar"
                     >
-                      <i class="fi fi-tc-settings"></i>
+                      <i className="fi fi-tc-settings"></i>
                     </button>
                   </div>
                 </div>

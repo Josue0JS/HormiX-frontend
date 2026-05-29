@@ -19,7 +19,7 @@ const CreateExpense = () => {
     metodoPago: "",
     categoria: "",
     recurrente: false,
-    estado: "ACTIVO",
+    estado: "Activo",
   });
 
   const [isLoading, setIsLoading] = useState(false);

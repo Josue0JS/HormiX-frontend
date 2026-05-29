@@ -19,19 +19,23 @@ const GestionMetodosPago = ({ onSelect, valorActual }) => {
   });
   const [loading, setLoading] = useState(false);
 
-  async function cargarMetodos() {
-    try {
-      const res = await fetch(end_points.payment_methods);
-      const data = await res.json();
-      setMetodos(data);
-    } catch (e) {
-      console.error("Error cargando métodos de pago:", e);
-    }
-  }
-
   useEffect(() => {
-    cargarMetodos();
-  }, []);
+    // Si valorActual tiene un método, agregarlo a la lista localmente
+    // Así aparece en el select aunque no esté cargado desde el servidor
+    if (valorActual && !metodos.find(m => m.nombre === valorActual)) {
+      setMetodos(prev => [...prev, { 
+        id: Math.random(), 
+        nombre: valorActual, 
+        franquicia: "", 
+        descripcion: "" 
+      }]);
+    }
+  }, [valorActual]);
+
+  async function cargarMetodos() {
+    // Sin endpoint GET/listado disponible, mantener métodos locales
+    // Los métodos se agregan cuando se crean/editan exitosamente
+  }
 
   function abrirCrear() {
     setModoEdicion(null);
@@ -61,19 +65,33 @@ const GestionMetodosPago = ({ onSelect, valorActual }) => {
         : end_points.payment_methods;
 
       const res = await fetch(url, {
-        method: "POST",
+        method: modoEdicion ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          ...(modoEdicion ? { id: modoEdicion.id } : {}),
           nombre: form.nombre.trim(),
-          franquicia: form.franquicia.trim() || null,
-          descripcion: form.descripcion.trim() || null,
-          estado: "ACTIVO",
+          franquicia: form.franquicia.trim(),
+          descripcion: form.descripcion.trim(),
+          estado: "Activo",
         }),
       });
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Error guardando método de pago:", res.status, errorText);
+        throw new Error(errorText || "Error en el servidor");
+      }
 
-      await cargarMetodos();
+      const nuevoMetodo = await res.json();
+      
+      if (modoEdicion) {
+        // Actualizar método existente
+        setMetodos(metodos.map(m => m.id === modoEdicion.id ? nuevoMetodo : m));
+      } else {
+        // Agregar nuevo método a la lista
+        setMetodos([...metodos, nuevoMetodo]);
+      }
+
       setModalAbierto(false);
       Swal.fire(
         "Éxito",
@@ -105,7 +123,9 @@ const GestionMetodosPago = ({ onSelect, valorActual }) => {
         method: "DELETE",
       });
       if (!res.ok) throw new Error();
-      await cargarMetodos();
+      
+      setMetodos(metodos.filter(m => m.id !== metodo.id));
+      
       if (valorActual === metodo.nombre) onSelect("");
       Swal.fire("Eliminado", "El método fue eliminado", "success");
     } catch {
@@ -133,10 +153,10 @@ const GestionMetodosPago = ({ onSelect, valorActual }) => {
         <button
           type="button"
           className="gestion-manage-btn"
-          onClick={() => setModalAbierto(true)}
+          onClick={abrirCrear}
           title="Gestionar métodos de pago"
         >
-          <i class="fi fi-rc-settings"></i> Gestionar
+          <i className="fi fi-rc-settings"></i> Gestionar
         </button>
       </div>
 
@@ -230,14 +250,14 @@ const GestionMetodosPago = ({ onSelect, valorActual }) => {
                       className="gestion-edit-btn"
                       onClick={() => abrirEditar(m)}
                     >
-                      <i class="fi fi-rr-edit"></i>
+                      <i className="fi fi-rr-edit"></i>
                     </button>
                     <button
                       type="button"
                       className="gestion-delete-btn"
                       onClick={() => eliminar(m)}
                     >
-                      <i class="fi fi-tc-settings"></i>
+                      <i className="fi fi-tc-settings"></i>
                     </button>
                   </div>
                 </div>

@@ -72,6 +72,14 @@ const EditExpense = () => {
     });
   };
 
+  const handleCategoriaSelect = (valor) => {
+    setFormData((prev) => ({ ...prev, categoria: valor }));
+  };
+
+  const handleMetodoPagoSelect = (valor) => {
+    setFormData((prev) => ({ ...prev, metodoPago: valor }));
+  };
+
   function updateExpense() {
     let expense = {
       id: parseInt(id),
